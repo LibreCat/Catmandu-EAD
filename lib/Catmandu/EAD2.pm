@@ -12,6 +12,8 @@ use constant XLINK => 'http://www.w3.org/1999/xlink';
 our $VERSION = '0.01';
 
 has 'mixed'      => (is => 'ro' , default => sub { 'ATTRIBUTES' });
+
+
 has '_reader'    => (is => 'ro');
 has '_writer'    => (is => 'ro');
 
@@ -35,7 +37,6 @@ sub BUILD {
     $schema->importDefinitions(EAD);
     $schema->importDefinitions(XLINK);
 
-use Data::Dumper;
     $schema->addHook(
         action => 'READER' ,
         after => sub {
@@ -49,6 +50,7 @@ use Data::Dumper;
             READER         => pack_type(&EAD, 'ead'),
             mixed_elements => $self->mixed ,
     );
+
     $self->{_writer} = $schema->compile(
             WRITER         => pack_type(&EAD, 'ead'),
             prefixes       => $self->prefixes
@@ -67,7 +69,12 @@ sub to_xml {
 	my $doc    = XML::LibXML::Document->new('1.0', 'UTF-8');
 	my $xml    = $self->_writer->($doc, $data);
 	$doc->setDocumentElement($xml);
-	$doc->toString(1);
+
+    my $str    = $doc->toString(1);
+    $str =~ s{\s+xmlns(:ead)?="urn:isbn:1-931666-22-9"}{}g;
+    $str =~ s{<(\/)?ead:}{<$1}g;
+    $str =~ s{<ead }{<ead xmlns="urn:isbn:1-931666-22-9" };
+    $str;
 }
 
 1;
