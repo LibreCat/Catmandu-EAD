@@ -29,7 +29,7 @@ sub BUILD {
 
     XML::Compile->addSchemaDirs(__FILE__);
 
-	my $schema = XML::Compile::Schema->new();
+    my $schema = XML::Compile::Schema->new();
 
     XML::Compile->knownNamespace(&EAD => 'ead2.xsd');
     XML::Compile->knownNamespace(&XLINK => 'xlink.xsd');
@@ -60,15 +60,15 @@ sub BUILD {
 }
 
 sub parse {
-	my ($self,$input) = @_;
-	$self->_reader->($input);
+    my ($self,$input) = @_;
+    $self->_reader->($input);
 }
 
 sub to_xml {
-	my ($self,$data) = @_;
-	my $doc    = XML::LibXML::Document->new('1.0', 'UTF-8');
-	my $xml    = $self->_writer->($doc, $data);
-	$doc->setDocumentElement($xml);
+    my ($self,$data) = @_;
+    my $doc    = XML::LibXML::Document->new('1.0', 'UTF-8');
+    my $xml    = $self->_writer->($doc, $data);
+    $doc->setDocumentElement($xml);
 
     my $str    = $doc->toString(1);
     $str =~ s{\s+xmlns(:ead)?="urn:isbn:1-931666-22-9"}{}g;
