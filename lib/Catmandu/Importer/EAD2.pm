@@ -37,5 +37,3 @@ sub generator {
 }
 
 1;
-
-__END__
